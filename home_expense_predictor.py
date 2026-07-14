@@ -404,28 +404,22 @@ X_train_c, X_test_c, y_train_c, y_test_c = (
     )
 )
 
-
-# Create Logistic Regression model
 clf = LogisticRegression(
     max_iter=1000,
     random_state=42
 )
 
 
-# Train the classifier
 clf.fit(
     X_train_c,
     y_train_c
 )
 
 
-# Predict categories for the test set
 y_pred_cls = clf.predict(
     X_test_c
 )
 
-
-# Calculate classification accuracy
 accuracy = accuracy_score(
     y_test_c,
     y_pred_cls
