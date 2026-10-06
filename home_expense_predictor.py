@@ -227,7 +227,6 @@ print("MODEL 1: Predicting Next Month's Household Spending")
 print("=" * 50)
 
 
-# Aggregate transaction-level data into monthly features
 monthly_data = expenses.groupby(
     expenses['Date'].dt.to_period('M')
 ).agg(
@@ -237,19 +236,14 @@ monthly_data = expenses.groupby(
 ).reset_index()
 
 
-# Create the prediction target:
-# For each month, store the following month's total spending
 monthly_data['Next_Month_Spending'] = (
     monthly_data['Total_Spending'].shift(-1)
 )
 
 
-# The final month has no known next-month target,
-# so remove it from the training dataset
 model_data = monthly_data.dropna().copy()
 
 
-# Select the three input features
 X = model_data[[
     'Total_Spending',
     'Num_Transactions',
@@ -270,7 +264,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 
-# Create and train the Multiple Linear Regression model
+
 reg_model = LinearRegression()
 
 reg_model.fit(
