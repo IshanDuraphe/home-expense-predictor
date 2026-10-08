@@ -60,7 +60,6 @@ def generate_home_expenses(n_days=1825, start_date='2021-01-01'):
 
     for date in dates:
 
-        # Rent occurs once every month on the 1st
         if date.day == 1:
 
             records.append({
@@ -71,7 +70,6 @@ def generate_home_expenses(n_days=1825, start_date='2021-01-01'):
                 )
             })
 
-        # Generate an average of approximately 1-2 transactions per day
         n_transactions = np.random.poisson(1.5)
 
         for _ in range(n_transactions):
@@ -101,10 +99,8 @@ def generate_home_expenses(n_days=1825, start_date='2021-01-01'):
     return pd.DataFrame(records)
 
 
-# Generate dataset
 expenses = generate_home_expenses()
 
-# Save dataset as CSV
 expenses.to_csv(
     'home_expenses.csv',
     index=False
@@ -124,7 +120,6 @@ print(expenses.head(), "\n")
 
 conn = sqlite3.connect('home_expenses.db')
 
-# Store the dataframe as an SQL table
 expenses.to_sql(
     'expenses',
     conn,
@@ -191,7 +186,6 @@ expenses['Amount'] = expenses['Amount'].fillna(
     expenses['Amount'].mean()
 )
 
-# Handle missing and inconsistent category names
 expenses['Category'] = (
     expenses['Category']
     .fillna('Uncategorized')
@@ -200,7 +194,6 @@ expenses['Category'] = (
     .str.title()
 )
 
-# Convert Date column to datetime format
 expenses['Date'] = pd.to_datetime(
     expenses['Date']
 )
@@ -251,11 +244,8 @@ X = model_data[[
 ]]
 
 
-# Prediction target
 y = model_data['Next_Month_Spending']
 
-
-# Split the dataset into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(
     X,
     y,
@@ -272,8 +262,6 @@ reg_model.fit(
     y_train
 )
 
-
-# Predict next-month spending for the test set
 y_pred_reg = reg_model.predict(X_test)
 
 
@@ -291,8 +279,6 @@ for actual, predicted in zip(
     )
 
 
-# Use the latest available month's features
-# to forecast the following month
 latest_features = monthly_data[[
     'Total_Spending',
     'Num_Transactions',
@@ -365,8 +351,6 @@ print("=" * 50)
 print("MODEL 2: Predicting Expense Category")
 print("=" * 50)
 
-
-# Create additional date-based features
 expenses['DayOfWeek'] = (
     expenses['Date'].dt.dayofweek
 )
